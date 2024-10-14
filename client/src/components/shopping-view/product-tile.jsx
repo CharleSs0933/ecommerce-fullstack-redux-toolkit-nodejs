@@ -21,10 +21,10 @@ const ShoppingProductTile = ({ product }) => {
         <CardContent className="p-4">
           <h2 className="text-xl font-bold mb-2">{product?.title}</h2>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground capitalize">
               {product?.category}
             </span>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground capitalize">
               {product?.brand}
             </span>
           </div>
