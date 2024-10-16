@@ -9,7 +9,7 @@ const shopCartRouter = require("./routes/shop/cart-routes");
 
 //create a db connection
 mongoose
-  .connect("mongodb+srv://root:123@cluster0.fnj2m.mongodb.net/")
+  .connect(process.env.MONGOOSEDB_URL)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.APP_URL,
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
