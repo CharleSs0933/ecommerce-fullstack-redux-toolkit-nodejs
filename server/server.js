@@ -9,7 +9,7 @@ const shopCartRouter = require("./routes/shop/cart-routes");
 
 //create a db connection
 mongoose
-  .connect(process.env.MONGOOSEDB_URL)
+  .connect("mongodb+srv://root:123@cluster0.fnj2m.mongodb.net/")
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
