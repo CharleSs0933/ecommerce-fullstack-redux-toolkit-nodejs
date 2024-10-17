@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import ProductDetailsDialog from "./product-details";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { useToast } from "@/hooks/use-toast";
 
 const createSearchParasHelper = (filterParams) => {
   const queryParams = [];
@@ -34,9 +36,13 @@ const createSearchParasHelper = (filterParams) => {
 
 const ShoppingListing = () => {
   const dispatch = useDispatch();
+
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const { user } = useSelector((state) => state.auth);
+
+  const { toast } = useToast();
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
@@ -73,6 +79,27 @@ const ShoppingListing = () => {
 
   const handleGetProductDetails = (getCurrentProductId) => {
     dispatch(fetchProductDetails(getCurrentProductId));
+  };
+
+  const handleAddToCart = (getCurrentProductId) => {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to your cart!",
+        });
+      } else {
+        toast({
+          title: "Something went wrong",
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -142,6 +169,7 @@ const ShoppingListing = () => {
                 product={productItem}
                 handleGetProductDetails={handleGetProductDetails}
                 key={productItem.title}
+                handleAddToCart={handleAddToCart}
               />
             ))}
         </div>
@@ -150,6 +178,7 @@ const ShoppingListing = () => {
         open={openDetailsDialog}
         setOpen={setOpenDetailsDialog}
         productDetails={productDetails}
+        handleAddToCart={handleAddToCart}
       />
     </div>
   );
