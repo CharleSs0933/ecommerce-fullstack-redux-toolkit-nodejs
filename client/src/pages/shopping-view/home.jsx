@@ -4,7 +4,12 @@ import bannerThree from "@/assets/banner-3.webp";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { fetchAllFilteredProducts } from "@/store/shop/product-slice";
+import { useToast } from "@/hooks/use-toast";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import {
+  fetchAllFilteredProducts,
+  fetchProductDetails,
+} from "@/store/shop/product-slice";
 import {
   Airplay,
   BabyIcon,
@@ -22,13 +27,57 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import ProductDetailsDialog from "./product-details";
 
 const ShoppingHome = () => {
   const [currentSlice, setCurrentSlice] = useState(0);
-  const { productList } = useSelector((state) => state.shopProducts);
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { toast } = useToast();
 
   const slides = [bannerOne, bannerTwo, bannerThree];
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+
+  const handleNavigateToListingPage = (getCurrentItem, section) => {
+    sessionStorage.removeItem("filters");
+    const currentFilter = {
+      [section]: [getCurrentItem.id],
+    };
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    navigate(`/shop/listing`);
+  };
+
+  const handleGetProductDetails = (getCurrentProductId) => {
+    dispatch(fetchProductDetails(getCurrentProductId));
+  };
+
+  const handleAddToCart = (getCurrentProductId) => {
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to your cart!",
+        });
+      } else {
+        toast({
+          title: "Something went wrong",
+        });
+      }
+    });
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -46,6 +95,10 @@ const ShoppingHome = () => {
       })
     );
   }, [dispatch]);
+
+  useEffect(() => {
+    if (productDetails !== null) setOpenDetailsDialog(true);
+  }, [productDetails]);
 
   const categoriesWithIcon = [
     { id: "men", label: "Men", icon: ShirtIcon },
@@ -107,7 +160,13 @@ const ShoppingHome = () => {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoriesWithIcon.map((categoryItem) => (
-              <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <Card
+                onClick={() =>
+                  handleNavigateToListingPage(categoryItem, "category")
+                }
+                key={categoryItem.id}
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+              >
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <categoryItem.icon className="w-12 h-12 mb-4 text-primary" />
                   <span className="font-bold">{categoryItem.label}</span>
@@ -123,7 +182,11 @@ const ShoppingHome = () => {
           <h2 className="text-3xl font-bold text-center mb-8">Shop by brand</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {brandsWithIcon.map((brandItem) => (
-              <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              <Card
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                key={brandItem.id}
+                onClick={() => handleNavigateToListingPage(brandItem, "brand")}
+              >
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
                   <span className="font-bold">{brandItem.label}</span>
@@ -143,11 +206,22 @@ const ShoppingHome = () => {
             {productList &&
               productList.length > 0 &&
               productList.map((productItem) => (
-                <ShoppingProductTile product={productItem} />
+                <ShoppingProductTile
+                  key={productItem._id}
+                  product={productItem}
+                  handleGetProductDetails={handleGetProductDetails}
+                  handleAddToCart={handleAddToCart}
+                />
               ))}
           </div>
         </div>
       </section>
+      <ProductDetailsDialog
+        open={openDetailsDialog}
+        setOpen={setOpenDetailsDialog}
+        productDetails={productDetails}
+        handleAddToCart={handleAddToCart}
+      />
     </div>
   );
 };
