@@ -96,6 +96,7 @@ const HeaderRightContent = () => {
               ? cartItems.items
               : []
           }
+          setOpenCartSheet={setOpenCartSheet}
         />
       </Sheet>
       <DropdownMenu>
