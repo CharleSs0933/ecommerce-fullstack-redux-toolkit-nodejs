@@ -9,7 +9,7 @@ const adminProductsRouter = require("./routes/admin/product-routes");
 const shopProductsRouter = require("./routes/shop/product-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
 const shopAddressRouter = require("./routes/shop/address-routes");
-const shopOrderRouter = require("./routes/shop/address-routes");
+const shopOrderRouter = require("./routes/shop/order-routes");
 
 //create a db connection
 mongoose
