@@ -32,7 +32,7 @@ const ShoppingCheckout = () => {
             cartItems.items &&
             cartItems.items.length > 0 &&
             cartItems.items.map((item) => (
-              <UserCartItemsContent cartItem={item} />
+              <UserCartItemsContent cartItem={item} key={item.productId} />
             ))}
           <div className="mt-8 space-y-4">
             <div className="flex justify-between">
