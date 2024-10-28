@@ -5,6 +5,8 @@ const initialState = {
   approvalURL: null,
   isLoading: false,
   orderId: null,
+  orderList: [],
+  orderDetails: null,
 };
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -34,10 +36,32 @@ export const capturePayment = createAsyncThunk(
   }
 );
 
+export const getAllOrdersByUserId = createAsyncThunk(
+  "order/getAllOrdersByUserId",
+  async (userId) => {
+    const result = await axios.get(`${apiUrl}/api/shop/order/list/${userId}`);
+
+    return result?.data;
+  }
+);
+
+export const getOrderDetails = createAsyncThunk(
+  "order/getOrderDetails",
+  async (id) => {
+    const result = await axios.get(`${apiUrl}/api/shop/order/details/${id}`);
+
+    return result?.data;
+  }
+);
+
 const shoppingOrderSlice = createSlice({
   name: "shoppingOrder",
   initialState,
-  reducers: {},
+  reducers: {
+    resetOrderDetails: (state, action) => {
+      state.orderDetails = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createNewOrder.pending, (state) => {
@@ -56,8 +80,32 @@ const shoppingOrderSlice = createSlice({
         state.isLoading = false;
         state.approvalURL = null;
         state.orderId = null;
+      })
+      .addCase(getAllOrdersByUserId.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllOrdersByUserId.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orderList = action.payload.data;
+      })
+      .addCase(getAllOrdersByUserId.rejected, (state, action) => {
+        state.isLoading = false;
+        state.orderList = [];
+      })
+      .addCase(getOrderDetails.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getOrderDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orderDetails = action.payload.data;
+      })
+      .addCase(getOrderDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.orderDetails = null;
       });
   },
 });
+
+export const { resetOrderDetails } = shoppingOrderSlice.actions;
 
 export default shoppingOrderSlice.reducer;
