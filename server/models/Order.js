@@ -9,7 +9,7 @@ const OrderSchema = new mongoose.Schema({
       title: String,
       image: String,
       price: String,
-      salePrice: String,
+      quantity: Number,
     },
   ],
   addressInfo: {
@@ -18,7 +18,7 @@ const OrderSchema = new mongoose.Schema({
     city: String,
     pincode: String,
     phone: String,
-    notess: String,
+    notes: String,
     quantity: Number,
   },
   orderStatus: String,
