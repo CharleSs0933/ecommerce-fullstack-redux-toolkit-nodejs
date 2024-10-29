@@ -8,7 +8,7 @@ const cors = require("cors");
 const authRouter = require("./routes/auth/auth-routes");
 
 const adminProductsRouter = require("./routes/admin/product-routes");
-const adminOrdersRouter = require("./routes/admin/product-routes");
+const adminOrdersRouter = require("./routes/admin/order-routes");
 
 const shopProductsRouter = require("./routes/shop/product-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
