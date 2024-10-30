@@ -57,6 +57,7 @@ const loginUser = async (req, res) => {
         message: "Incorrect password! Please try again",
       });
     }
+
     const token = jwt.sign(
       {
         id: checkUser._id,
@@ -68,16 +69,22 @@ const loginUser = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
-      success: true,
-      message: "Logged in successfully",
-      user: {
-        email: checkUser.email,
-        role: checkUser.role,
-        id: checkUser._id,
-        userName: checkUser.userName,
-      },
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      })
+      .json({
+        success: true,
+        message: "Logged in successfully",
+        user: {
+          email: checkUser.email,
+          role: checkUser.role,
+          id: checkUser._id,
+          userName: checkUser.userName,
+        },
+      });
   } catch (e) {
     console.log(e);
     res.status(500).json({
@@ -99,6 +106,7 @@ const logoutUser = (req, res) => {
 //Auth middleware
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
+
   if (!token)
     return res.status(401).json({
       success: false,
