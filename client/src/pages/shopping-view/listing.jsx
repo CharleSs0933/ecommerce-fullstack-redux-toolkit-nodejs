@@ -85,8 +85,6 @@ const ShoppingListing = () => {
   };
 
   const handleAddToCart = (getCurrentProductId, getTotalStock) => {
-    console.log(cartItems);
-
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
