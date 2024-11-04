@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import ProductDetailsDialog from "./product-details";
+import ProductDetailsDialog from "../../components/shopping-view/product-details";
 import { fetchProductDetails } from "@/store/shop/product-slice";
 
 const SearchPage = () => {

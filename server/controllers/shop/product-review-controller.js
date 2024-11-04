@@ -23,7 +23,7 @@ const addProductReview = async (req, res) => {
     const checkExistReview = await ProductReview.findOne({ productId, userId });
 
     if (checkExistReview) {
-      return res.status(403).json({
+      return res.status(400).json({
         success: false,
         message: "You already reviewed this product!",
       });
@@ -65,8 +65,9 @@ const getProductReviews = async (req, res) => {
     const { productId } = req.params;
 
     const reviews = await ProductReview.find({ productId });
+    console.log(reviews);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: reviews,
     });

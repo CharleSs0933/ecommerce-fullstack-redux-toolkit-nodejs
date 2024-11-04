@@ -28,7 +28,7 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import ProductDetailsDialog from "./product-details";
+import ProductDetailsDialog from "../../components/shopping-view/product-details";
 
 const ShoppingHome = () => {
   const [currentSlice, setCurrentSlice] = useState(0);
