@@ -14,11 +14,13 @@ const ProductImageUpload = ({
   setImageLoadingState,
   imageLoadingState,
   isEditMode,
+  isCustomStyling = false,
 }) => {
   const inputRef = useRef(null);
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const handleImageFileChage = (event) => {
-    console.log(event.target.files);
     const seletedFile = event.target.files?.[0];
     if (seletedFile) setImageFile(seletedFile);
   };
@@ -45,7 +47,7 @@ const ProductImageUpload = ({
     const data = new FormData();
     data.append("my_file", imageFile);
     const response = await axios.post(
-      "http://localhost:5000/api/admin/products/upload-image",
+      `${apiUrl}/api/admin/products/upload-image`,
       data
     );
     if (response.data?.success) {
@@ -59,7 +61,7 @@ const ProductImageUpload = ({
   }, [imageFile]);
 
   return (
-    <div className="w-full max-w-md mx-auto mt-4">
+    <div className={`w-full mx-auto mt-4 ${isCustomStyling ? "" : "max-w-md"}`}>
       <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
         onDragOver={handleDragOver}

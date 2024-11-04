@@ -69,8 +69,6 @@ const ProductDetailsDialog = ({
     if (productDetails !== null) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
 
-  console.log(reviews);
-
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogTitle />
